@@ -26,3 +26,5 @@ app.use('/', routes);
 app.listen(PORT, () => {
     console.log(`UI Server running at http://localhost:${PORT}`);
 });
+
+module.exports = app;
