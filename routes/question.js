@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { api, formatApiError, requestFirst } = require('../lib/apiClient');
+const { apiFor, formatApiError, requestFirst } = require('../lib/apiClient');
 
 function normalizeQuestionPayload(body) {
     const optionsRaw = body?.options || body?.['options[]'] || [];
@@ -29,6 +29,7 @@ function normalizeQuestionPayload(body) {
 // List questions
 router.get('/', async (req, res) => {
     try {
+        const api = apiFor(req);
         const response = await api.get('/questions');
         res.render('questions/list', { questions: response.data, title: 'Question List' });
     } catch (error) {
@@ -44,6 +45,7 @@ router.get('/', async (req, res) => {
 // Render create form
 router.get('/create', async (req, res) => {
     try {
+        const api = apiFor(req);
         const quizzesResponse = await api.get('/quizzes');
         res.render('questions/create', {
             quizzes: quizzesResponse.data,
@@ -63,6 +65,7 @@ router.get('/create', async (req, res) => {
 // Create question
 router.post('/', async (req, res) => {
     try {
+        const api = apiFor(req);
         const { quizId } = req.body;
         const questionData = normalizeQuestionPayload(req.body);
 
@@ -80,7 +83,7 @@ router.post('/', async (req, res) => {
             await requestFirst([
                 { method: 'post', url: `/quizzes/${quizId}/question`, data: questionData },
                 { method: 'post', url: `/quizzes/${quizId}/questions`, data: questionData }
-            ]);
+            ], api);
             res.redirect(`/quizzes/${quizId}`);
         } else {
             await api.post('/questions', questionData);
@@ -100,6 +103,7 @@ router.post('/', async (req, res) => {
 // View question details
 router.get('/:id', async (req, res) => {
     try {
+        const api = apiFor(req);
         const response = await api.get(`/questions/${req.params.id}`);
         res.render('questions/details', { question: response.data, title: 'Question Details' });
     } catch (error) {
@@ -115,6 +119,7 @@ router.get('/:id', async (req, res) => {
 // Render edit form
 router.get('/:id/edit', async (req, res) => {
     try {
+        const api = apiFor(req);
         const response = await api.get(`/questions/${req.params.id}`);
         res.render('questions/edit', { question: response.data, title: 'Edit Question' });
     } catch (error) {
@@ -130,6 +135,7 @@ router.get('/:id/edit', async (req, res) => {
 // Update question
 router.put('/:id', async (req, res) => {
     try {
+        const api = apiFor(req);
         const questionData = normalizeQuestionPayload(req.body);
         await api.put(`/questions/${req.params.id}`, questionData);
         res.redirect('/questions');
@@ -142,6 +148,7 @@ router.put('/:id', async (req, res) => {
 // Delete question
 router.delete('/:id', async (req, res) => {
     try {
+        const api = apiFor(req);
         await api.delete(`/questions/${req.params.id}`);
         res.redirect('/questions');
     } catch (error) {

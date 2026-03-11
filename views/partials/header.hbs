@@ -12,6 +12,18 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/questions">Questions</a>
                 </li>
+                <% if (isAuthenticated) { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/logout">Logout</a>
+                    </li>
+                <% } else { %>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/login?returnTo=<%= encodeURIComponent(typeof originalUrl === 'string' ? originalUrl : '/') %>">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/register?returnTo=<%= encodeURIComponent(typeof originalUrl === 'string' ? originalUrl : '/') %>">Register</a>
+                    </li>
+                <% } %>
             </ul>
         </div>
     </div>

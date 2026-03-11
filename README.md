@@ -39,6 +39,7 @@ You can override via environment variables:
 
 - `UI_PORT` — port for this UI server
 - `API_URL` — base URL of the Assignment 1 API
+- `API_TIMEOUT_MS` — axios timeout (ms)
 
 See [.env.example](.env.example).
 
@@ -60,3 +61,10 @@ See [.env.example](.env.example).
 
 - If you see 404/500 errors, confirm the API is running and `API_URL` matches the API base URL.
 - If quiz details fails to load questions, ensure the API supports `GET /quizzes/:id/populate`.
+
+### Authentication (important)
+
+This UI calls protected endpoints like `GET /quizzes` and `POST /quizzes`.
+
+- If your Assignment 1 API requires JWT/admin for these routes, you must login in the UI at `/login`.
+- The UI stores the API JWT in an HTTP-only cookie (`authToken`) and automatically sends `Authorization: Bearer <token>` on API requests.

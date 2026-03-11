@@ -3,6 +3,7 @@ const express = require('express');
 const path = require('path');
 const methodOverride = require('method-override');
 const expressLayouts = require('express-ejs-layouts');
+const cookieParser = require('cookie-parser');
 const routes = require('./routes');
 
 const app = express();
@@ -18,6 +19,14 @@ app.set('layout', './layouts/main.hbs');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(cookieParser());
+
+app.use((req, res, next) => {
+    res.locals.isAuthenticated = Boolean(req.cookies?.authToken);
+    res.locals.apiBaseUrl = process.env.API_URL || 'http://localhost:3000';
+    res.locals.originalUrl = req.originalUrl;
+    next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
