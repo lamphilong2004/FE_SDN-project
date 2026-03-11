@@ -113,10 +113,13 @@ router.post('/register', async (req, res) => {
 
         res.redirect(returnTo);
     } catch (error) {
-        const apiMessage = error?.response?.data?.err?.message;
-        const message = typeof apiMessage === 'string' && apiMessage.trim()
-            ? apiMessage
-            : formatApiError(error);
+        const data = error?.response?.data;
+        const apiMessage =
+            (typeof data?.message === 'string' && data.message.trim() ? data.message : null) ||
+            (typeof data?.status === 'string' && data.status.trim() ? data.status : null) ||
+            (typeof data?.err?.message === 'string' && data.err.message.trim() ? data.err.message : null);
+
+        const message = apiMessage || formatApiError(error);
 
         res.status(500).render('auth/register', {
             title: 'Register',
