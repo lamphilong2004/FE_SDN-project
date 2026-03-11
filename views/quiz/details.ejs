@@ -1,0 +1,49 @@
+<div class="mb-4">
+    <a href="/quizzes" class="btn btn-link p-0 text-decoration-none">&larr; Back to List</a>
+    <h1 class="mt-2">
+        <%= quiz.title %>
+    </h1>
+    <p class="lead">
+        <%= quiz.description %>
+    </p>
+</div>
+
+<div class="card mb-4 shadow-sm">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Questions in this Quiz</h4>
+        <div class="d-flex gap-2">
+            <a href="/quizzes/<%= quiz._id %>/attach-questions" class="btn btn-outline-primary btn-sm">Add from List</a>
+            <a href="/questions/create?quizId=<%= quiz._id %>" class="btn btn-success btn-sm">Add New Question</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <% if (questions && questions.length > 0) { %>
+            <div class="list-group list-group-flush">
+                <% questions.forEach((q, index)=> { %>
+                    <% 
+                        const qObj = (q && typeof q === 'object') ? q : { _id: q, text: String(q), options: [], correctAnswerIndex: 0 };
+                        const opts = Array.isArray(qObj.options) ? qObj.options : [];
+                        const answer = opts[Number(qObj.correctAnswerIndex)] || '';
+                    %>
+                    <div class="list-group-item px-0">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">Q<%= index + 1 %>: <%= qObj.text || '—' %>
+                                </h6>
+                                <p class="mb-1 small text-muted">Options: <%= opts.join(', ') %></p>
+                                <p class="mb-0 small text-success">Answer: <%= answer %></p>
+                            </div>
+                            <div class="ms-3">
+                                <% if (qObj._id) { %>
+                                    <a href="/questions/<%= qObj._id %>/edit" class="btn btn-sm btn-outline-warning">Edit</a>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <p class="text-center text-muted my-3">No questions found for this quiz.</p>
+        <% } %>
+    </div>
+</div>

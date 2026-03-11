@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="mb-4">
+            <a href="/questions" class="btn btn-link p-0 text-decoration-none">&larr; Back to List</a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Question Details</h4>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title mb-4">
+                    <%= question.text %>
+                </h5>
+
+                <div class="mb-4">
+                    <h6>Options:</h6>
+                    <ul class="list-group">
+                        <% question.options.forEach((opt, idx)=> { %>
+                            <li
+                                class="list-group-item <%= idx === Number(question.correctAnswerIndex) ? 'list-group-item-success fw-bold' : '' %>">
+                                <%= opt %>
+                                    <% if (idx === Number(question.correctAnswerIndex)) { %>
+                                        <span class="badge bg-success float-end">Correct Answer</span>
+                                        <% } %>
+                            </li>
+                            <% }) %>
+                    </ul>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/questions/<%= question._id %>/edit" class="btn btn-warning">Edit Question</a>
+                    <form action="/questions/<%= question._id %>?_method=DELETE" method="POST"
+                        onsubmit="return confirm('Delete this question?')">
+                        <button type="submit" class="btn btn-danger">Delete Question</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
