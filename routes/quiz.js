@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { apiFor, formatApiError } = require('../lib/apiClient');
+const { requireAuth, requireAdmin } = require('../middleware/auth');
 
 function toId(value) {
     if (typeof value !== 'string') return null;
@@ -9,7 +10,7 @@ function toId(value) {
 }
 
 // List quizzes
-router.get('/', async (req, res) => {
+router.get('/', requireAuth, async (req, res) => {
     try {
         const api = apiFor(req);
         const response = await api.get('/quizzes');
@@ -25,12 +26,12 @@ router.get('/', async (req, res) => {
 });
 
 // Render create form
-router.get('/create', (req, res) => {
+router.get('/create', requireAdmin, (req, res) => {
     res.render('quiz/create', { title: 'Create Quiz' });
 });
 
 // Create quiz
-router.post('/', async (req, res) => {
+router.post('/', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         const title = typeof req.body?.title === 'string' ? req.body.title.trim() : req.body?.title;
@@ -53,7 +54,7 @@ router.post('/', async (req, res) => {
 });
 
 // View quiz details
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAuth, async (req, res) => {
     try {
         const api = apiFor(req);
         const quizResponse = await api.get(`/quizzes/${req.params.id}`);
@@ -81,7 +82,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Render attach-existing-questions page
-router.get('/:id/attach-questions', async (req, res) => {
+router.get('/:id/attach-questions', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         const [quizResponse, questionsResponse] = await Promise.all([
@@ -115,7 +116,7 @@ router.get('/:id/attach-questions', async (req, res) => {
 });
 
 // Attach selected existing questions to quiz
-router.post('/:id/attach-questions', async (req, res) => {
+router.post('/:id/attach-questions', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         const quizResponse = await api.get(`/quizzes/${req.params.id}`);
@@ -148,7 +149,7 @@ router.post('/:id/attach-questions', async (req, res) => {
 });
 
 // Render edit form
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         const response = await api.get(`/quizzes/${req.params.id}`);
@@ -164,7 +165,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // Update quiz
-router.put('/:id', async (req, res) => {
+router.put('/:id', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         const id = req.params.id;
@@ -195,7 +196,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete quiz
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', requireAdmin, async (req, res) => {
     try {
         const api = apiFor(req);
         await api.delete(`/quizzes/${req.params.id}`);

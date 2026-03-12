@@ -5,6 +5,7 @@ const methodOverride = require('method-override');
 const expressLayouts = require('express-ejs-layouts');
 const cookieParser = require('cookie-parser');
 const routes = require('./routes');
+const { attachCurrentUser } = require('./middleware/auth');
 
 const app = express();
 const PORT = process.env.UI_PORT || 3001;
@@ -27,6 +28,9 @@ app.use((req, res, next) => {
     res.locals.originalUrl = req.originalUrl;
     next();
 });
+
+// Populate res.locals.currentUser + res.locals.isAdmin (best-effort)
+app.use(attachCurrentUser);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes

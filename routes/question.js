@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { apiFor, formatApiError, requestFirst } = require('../lib/apiClient');
+const { requireAdmin } = require('../middleware/auth');
+
+// Only admins can manage questions in the UI.
+router.use(requireAdmin);
 
 function normalizeQuestionPayload(body) {
     const optionsRaw = body?.options || body?.['options[]'] || [];
