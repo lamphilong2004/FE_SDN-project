@@ -19,7 +19,7 @@ export default function AppNavbar() {
     <nav className="navbar navbar-expand-lg navbar-light bg-light border-bottom">
       <div className="container">
         <Link className="navbar-brand fw-bold" to={isAdmin ? '/admin' : '/dashboard'}>
-          FPT University
+          Question Bank
         </Link>
 
         <button

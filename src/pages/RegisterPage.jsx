@@ -8,7 +8,6 @@ import { fetchMe, register as registerThunk, selectAuth } from '../store/authSli
 export default function RegisterPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [admin, setAdmin] = useState(false);
 
   const auth = useSelector(selectAuth);
   const dispatch = useDispatch();
@@ -22,7 +21,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const result = await dispatch(registerThunk({ username, password, admin }));
+    const result = await dispatch(registerThunk({ username, password }));
     if (registerThunk.fulfilled.match(result)) {
       const me = await dispatch(fetchMe());
       if (fetchMe.fulfilled.match(me)) {
@@ -65,19 +64,6 @@ export default function RegisterPage() {
                       autoComplete="new-password"
                       required
                     />
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="admin"
-                      checked={admin}
-                      onChange={(e) => setAdmin(e.target.checked)}
-                    />
-                    <label className="form-check-label" htmlFor="admin">
-                      Register as admin
-                    </label>
                   </div>
 
                   <button className="btn btn-primary w-100" disabled={auth.loading}>

@@ -10,7 +10,8 @@ function loadToken() {
 
 export const login = createAsyncThunk('auth/login', async ({ username, password }, thunkApi) => {
   try {
-    const res = await api.post('/users/login', { username, password });
+    const normalizedUsername = typeof username === 'string' ? username.trim() : username;
+    const res = await api.post('/users/login', { username: normalizedUsername, password });
     const token = res?.data?.token;
     if (!token) throw new Error('No token returned from API');
 
@@ -22,11 +23,12 @@ export const login = createAsyncThunk('auth/login', async ({ username, password 
   }
 });
 
-export const register = createAsyncThunk('auth/register', async ({ username, password, admin }, thunkApi) => {
+export const register = createAsyncThunk('auth/register', async ({ username, password }, thunkApi) => {
   try {
-    await api.post('/users/signup', { username, password, admin });
+    const normalizedUsername = typeof username === 'string' ? username.trim() : username;
+    await api.post('/users/signup', { username: normalizedUsername, password, admin: false });
     // Auto login after register
-    const res = await api.post('/users/login', { username, password });
+    const res = await api.post('/users/login', { username: normalizedUsername, password });
     const token = res?.data?.token;
     if (!token) throw new Error('No token returned from API');
 
