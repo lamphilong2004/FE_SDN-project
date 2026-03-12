@@ -21,8 +21,6 @@ export default function DashboardPage() {
       <div className="container py-5">
         <h1 className="h3 mb-4">Dashboard</h1>
 
-        <div className="mb-4">Click and do Quiz</div>
-
         {error ? <div className="alert alert-warning">{error}</div> : null}
 
         {loading ? <div>Loading...</div> : null}
