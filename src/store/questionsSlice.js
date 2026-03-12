@@ -63,15 +63,27 @@ const questionsSlice = createSlice({
         state.loading = false;
         state.error = action.payload || 'Cannot load questions';
       })
+      .addCase(createQuestion.pending, (state) => {
+        state.error = null;
+      })
       .addCase(createQuestion.fulfilled, (state, action) => {
         state.items.unshift(action.payload);
+      })
+      .addCase(createQuestion.rejected, (state, action) => {
+        state.error = action.payload || 'Cannot create question';
       })
       .addCase(updateQuestion.fulfilled, (state, action) => {
         const idx = state.items.findIndex((q) => q?._id === action.payload?._id);
         if (idx >= 0) state.items[idx] = action.payload;
       })
+      .addCase(updateQuestion.rejected, (state, action) => {
+        state.error = action.payload || 'Cannot update question';
+      })
       .addCase(deleteQuestion.fulfilled, (state, action) => {
         state.items = state.items.filter((q) => q?._id !== action.payload);
+      })
+      .addCase(deleteQuestion.rejected, (state, action) => {
+        state.error = action.payload || 'Cannot delete question';
       });
   }
 });
